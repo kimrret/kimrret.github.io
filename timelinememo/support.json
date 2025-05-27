@@ -1,5 +1,5 @@
 {
-  "chatLink": "https://open.kakao.com/o/yourchatlink",
-  "qrImage": "https://kimrret.github.io/images/qr.png",
-  "message": "문의나 후원은 여기로 연락 주세요 🙏"
+  "support-links": "https://open.kakao.com/o/s1HTCyyh",
+  "qrImage": "https://kimrret.github.io/timelinememo/images/supportqr.jpg",
+  "support-message": "오픈채팅 후원/문의"
 }
