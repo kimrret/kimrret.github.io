@@ -1,5 +1,10 @@
 {
-  "support-links": "https://open.kakao.com/o/s1HTCyyh",
-  "qrImage": "https://kimrret.github.io/timelinememo/images/timelinekakaoqr.jpg",
-  "support-message": "오픈채팅 후원/문의"
+  "supports": [
+    {
+      "label": "💬 카카오 오픈채팅 후원/문의",
+      "url": "https://open.kakao.com/o/s1HTCyyh",
+      "qrImage": "https://kimrret.github.io/timelinememo/images/timelinekakaoqr.jpg"
+    }
+  ],
+  "message": "문의나 후원은 아래 링크를 이용해 주세요 🙏"
 }
