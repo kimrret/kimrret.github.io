@@ -7,7 +7,7 @@
       "qrImage": "https://kimrret.github.io/timelinememo/images/timelinekakaoqr.jpg"
     },
     {
-      "action": "copy",
+      "action": "mailto",
       "label": "✉️ 이메일 문의 : kimrret@gmail.com",
       "value": "kimrret@gmail.com"
     }
