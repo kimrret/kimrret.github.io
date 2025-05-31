@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      #custom-panel {
+        /* position: fixed; */
+        padding: 10px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        overflow: hidden;
+        display: none;
+        flex-direction: column;
+      }
+      .show {
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        border: 1px solid #aaa;
+        min-width: 240px;
+        max-width: 400px;
+        max-height: 600px;
+        width: 300px;
+        height: 400px;
+        top: 5vh;
+        right: 3vh;
+        z-index: 9999;
+        position: fixed;
+        border-radius: 10px;
+        cursor: move; /* 드래그 커서 */
+        resize: vertical;
+      }
+      .hide {
+        background: rgba(255, 255, 255, 0.25);
+        max-width: 200px;
+        max-height: 40px;
+        position: static;
+        resize: none;
+      }
+
+      .panelBody {
+        /* flex: 0 1 auto; */
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        /* overflow: hidden; */
+        /* height: 95%; */
+        min-height: 50; /* ⚠️ 이것도 없으면 내용에 따라 늘어나지 않음 */
+        overflow: visible;
+      }
+
+      .body {
+        display: flex;
+        flex-wrap: wrap; /* 줄바꿈 가능 */
+        align-items: center;
+        padding-block: 7px;
+        border-bottom-color: #63636321; 
+        border-bottom-width: thin; 
+        border-bottom-style: outset;
+      }
+
+      .gap {
+        gap: 0.5em;
+      }
+
+      .space { 
+        justify-content: space-between;
+      }
+
+      .body > div {
+        display: flex;
+        align-items: center;
+      }
+
+      /* .button-arr {
+        border-right-color: #ccc;
+        border-right-width: 0.1px;
+        border-right-style: inset;
+        height: 30%;
+        padding-right: 7px;
+      } */
+
+      .button-arr {
+        display: inline-flex;
+        align-items: center;
+      }
+      .line_separator {
+        width: 100%;
+        height: 1px;
+        background-color: #63636321;
+      }
+      .separator {
+        width: 1px;
+        height: 7px; /* 선의 길이 */
+        background-color: #aaa;
+        margin: 0 5px; /* 버튼과의 간격 */
+      }
+      #timelineNotes {
+        width: 100%;
+        /* flex: 0 1 auto; */
+        flex-grow: 1;
+        resize: none;
+        min-height: 0; /* ⚠️ 이것도 없으면 내용에 따라 늘어나지 않음 */
+        background-color: #948aa54f;
+      }
+      #timelineNotes:focus {
+      outline: 2px solid #5e576b;
+      outline-offset: 1px;
+      }
+      .none{
+        display: none;
+      }
+      input[type=number] {
+        width: 25px; border: 1px solid #aaa; border-radius: 3px; padding: 1px; text-align: right;
+      }
+      
+      .glow-input {
+        padding: 12px 16px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .glow-input:focus {
+        border-color: #4fc3f7;
+        box-shadow: 0 0 8px 4px rgba(79, 195, 247, 0.6);
+        background-color: #f0fcff;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="show" id="custom-panel">
+      <div class="space" id="panelHeader" style="padding-bottom: 5px; background-color: rgba(228, 228, 228, 0.329); border-bottom-color: #acacaca8; border-bottom-width: thin; border-bottom-style: outset; display: flex; align-items: center; margin-bottom:1px; cursor: move;">
+        <!-- 왼쪽 그룹: 타이틀 + 단축키 토글 -->
+        <div style="font-size:16px; display: flex; align-items: center; gap: 5px;">
+          🎬 타임라인 메모 test
+          <div class="k-tooltip">
+            <label class="toggle-switch">
+              <input type="checkbox" id="shortcutToggle" checked>
+              <span class="slider"></span>
+            </label>
+            <span class="tooltip-text">단축키 ON/OFF</span>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 패널 접기 버튼 -->
+        <button class="k-tooltip" id="panelvisible" style="font-size:16px;">🔽
+          <span class="tooltip-text"></span>
+        </button>
+      </div>
+
+      <div class="panelBody" id="panelBody">
+
+        <div class="body" id="panelBody_button">
+          <button class="k-tooltip" id="play">⏯️ 재생<span class="tooltip-text"></span>
+          </button>
+          <div class="separator"></div>
+          <button class="k-tooltip" id="left">⏪ -5초
+            <span class="tooltip-text"></span>
+          </button>
+          <div class="separator"></div>
+          <button class="k-tooltip" id="right">⏩ +5초
+            <span class="tooltip-text"></span>
+          </button>
+          <div class="separator"></div>
+          <button class="k-tooltip" id="movetimeline">🕒 이동
+            <span class="tooltip-text"></span>
+          </button>
+          <div class="separator"></div>
+          <button class="k-tooltip panel-open" id="addtimeline">🎬 추가
+            <span class="tooltip-text"></span>
+          </button>
+          <div class="separator"></div>
+          <button class="k-tooltip panel-open" id="addtitle1">🗃️ 대분류
+            <span class="tooltip-text"></span>
+          </button>
+          <div class="separator"></div>
+          <button class="k-tooltip panel-open" id="addtitle2">📂 중분류
+            <span class="tooltip-text"></span>
+          </button>
+          <div class="separator"></div>
+          <button class="k-tooltip" id="copy">📋 복사
+            <span class="tooltip-text"></span>
+          </button>
+          <div class="separator"></div>
+            <button class="none" id="leftctrl"></button>
+            <button class="none" id="rightctrl"></button>
+            <button class="none" id="timelinesyncminusctrl"></button>
+            <button class="none" id="timelinesyncaddctrl"></button>
+          <button class="none" id="changefocus"></button>
+        </div>
+
+        <div class="body space">
+          <div class="time-set gap">🕒 타임라인 싱크 : 
+            <div> 
+              <input class="min" type="number" id="syncTimeline_min" data-set="syncTimeline" min=0 value=0 >
+              분
+              <input class="sec" type="number" id="syncTimeline_sec" data-set="syncTimeline" min=0 value=1 >
+              초 
+            </div>
+          </div>
+          <button class="k-tooltip button-arr" id="timelinesyncadd">➕ 
+            <span class="tooltip-text"></span>
+          </button>
+          
+          <button class="k-tooltip button-arr" id="timelinesyncminus">➖ 
+            <span class="tooltip-text"></span>
+          </button>
+          <button class="k-tooltip" id="calcvisible" style="font-size:16px;"><span>◀️</span>
+            <span class="tooltip-text"></span>
+          </button>
+
+          <div id="calctimeline" style="display: none;">
+            <div class="time-set">
+              <input class="min" type="number" id="calc_min1" data-set="calc1" min=0 value=0 >
+              <label>분 </label>
+              <input class="sec" type="number" id="calc_sec1" data-set="calc1" min=0 value=0 >
+              <label>초 - </label>
+            </div>
+            <div class="time-set">
+              <input class="min" type="number" id="calc_min2" data-set="calc2" min=0 value=0 >
+              <label>분 </label>
+              <input class="sec" type="number" id="calc_sec2" data-set="calc2" min=0 value=0 >
+              <label>초 </label>
+            </div>
+            <div class="separator"></div>
+            <button class="k-tooltip" id="calcapply" style="font-size:14px;">
+              <span>계산 적용</span>
+              <span class="tooltip-text"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="body k-tooltip" id="live_select_div" style="display: none;">
+          <label>불러오기 :
+            <select id="live_load_select"></select>
+          </label><span class="tooltip-text">생방송에서 작성한 메모를 불러옵니다. (추천) 항목의 메모가 현재 보고 있는 vod와 일치하면 자동으로 타임라인의 싱크 조절을 시도합니다.</span> 
+        </div>
+
+        <textarea id="timelineNotes"></textarea>
+        <div id="help" style="margin-top: 5px; font-size: 12px; color: #666; align-items: flex-end">💡 단축키로 제어해보세요.  </div>
+      </div>
+    </div>    
+  </body>
+</html>
+
+
+<!-- <script type="module">
+  chrome.storage.sync.get({ enabled: true }, async (data) => {
+    if (!data.enabled) return;
+
+    const src = chrome.runtime.getURL('main.js');
+    const mod = await import(src);
+    mod.initMain(); // export된 함수 실행
+  });
+</script> -->
