@@ -1,4 +1,4 @@
-console.log("location.hostname", location.hostname);
+console.log("location.hostnameaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 const isLive = location.hostname.startsWith("play");
 const isVOD = location.hostname.startsWith("vod");
 
